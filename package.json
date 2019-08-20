@@ -1,6 +1,6 @@
 {
-  "name": "spotify-graphql",
-  "version": "1.4.0",
+  "name": "bywo-spotify-graphql",
+  "version": "1.4.1",
   "repository": {
     "type": "git",
     "url": "git://thefrenchhouse/spotify-graphql.git"
@@ -45,9 +45,10 @@
   "dependencies": {
     "graphql": "^0.9.1",
     "graphql-tools": "0.10.1",
+    "isomorphic-unfetch": "^3.0.0",
     "lodash": "^4.17.4",
     "lru_map": "^0.3.3",
-    "request": "^2.81.0",
+    "query-string": "^6.8.2",
     "spotify-web-api-node": "^2.3.6",
     "when": "^3.7.7"
   }
