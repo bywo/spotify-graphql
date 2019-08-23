@@ -1,7 +1,6 @@
-import { isUndefined } from 'lodash';
-const poll: (callback: Function, delay: number, predicate: Function) => any = require('when/poll');
+import { isUndefined } from "lodash";
 
-let pollsMap: {[k: string]: Poll} = {};
+let pollsMap: { [k: string]: Poll } = {};
 
 export interface ITaskWrapper {
   task: () => Promise<any>;
@@ -11,22 +10,35 @@ export interface ITaskWrapper {
 
 export class Poll {
   public queue: ITaskWrapper[] = [];
-  public poll: Promise<any> = null;
+  public poll: any = null;
 
-  constructor(private name: string, private delay: number = 200, private debug: boolean = false) {}
+  constructor(
+    private name: string,
+    private delay: number = 200,
+    private debug: boolean = false
+  ) {}
 
-  public run(): void {
-    this.log('add item to queue', this.queue.length);
+  public async run(): Promise<void> {
+    this.log("add item to queue", this.queue.length);
     if (!this.isRunning() && !this.isEmpty()) {
-      this.poll = poll(
-        () => {
-          this.log('consume from queue',  this.queue.length);
-          let taskWrapper: ITaskWrapper = this.queue.pop();
-          return taskWrapper.task.call(taskWrapper).then(taskWrapper.resolver, taskWrapper.rejecter);
-        },
-        this.delay,
-        () => this.isEmpty()
-      ).then( () => this.poll = null );
+      this.poll = true;
+      let isFirst = true;
+
+      while (!this.isEmpty()) {
+        if (!isFirst) {
+          await new Promise(resolve => setTimeout(resolve, this.delay));
+        }
+
+        this.log("consume from queue", this.queue.length);
+        let taskWrapper: ITaskWrapper = this.queue.pop();
+        await taskWrapper.task
+          .call(taskWrapper)
+          .then(taskWrapper.resolver, taskWrapper.rejecter);
+
+        isFirst = false;
+      }
+
+      this.poll = null;
     }
   }
 
@@ -54,13 +66,17 @@ export class Poll {
 
   private log(...args): void {
     if (this.debug) {
-      console.log.apply(console.log, ['Poll >'].concat(args));
+      console.log.apply(console.log, ["Poll >"].concat(args));
     }
   }
 }
 
 // Given a namespace, synchronize all tasks polling to avoid DoS Spotify API
-export function syncedPoll(namespace: string, task: () => Promise<any>, delay: number = 200): Promise<any> {
+export function syncedPoll(
+  namespace: string,
+  task: () => Promise<any>,
+  delay: number = 200
+): Promise<any> {
   if (isUndefined(pollsMap[namespace])) {
     pollsMap[namespace] = new Poll(namespace, delay);
   }

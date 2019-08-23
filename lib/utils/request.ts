@@ -1,31 +1,33 @@
-import * as request from 'request';
+import fetch from "isomorphic-unfetch";
+const queryString = require("query-string");
+
 export function apiRequest(spotifyApiClient: any): Function {
-    return (url: string, params?: {[k: string]: any}, formatter?: Function): Promise<any> => {
-        const options: request.UrlOptions & request.CoreOptions = {
-            url: url,
-            qs: params || {},
-            headers: {
-                Authorization: `Bearer ${spotifyApiClient._credentials.accessToken}`,
-            }
-        };
-        return new Promise((resolve, reject) => {
-            request(options, (error, response, body) => {
-                if (!error && response.statusCode === 200) {
-                    const json: any = JSON.parse(body);
-                    resolve(!!formatter ? formatter(json) : json);
-                } else {
-                    try {
-                        const json: any = JSON.parse(body);
-                        if (json.error) {
-                            reject(json.error);
-                        } else {
-                            reject(error);
-                        }
-                    } catch (e) {
-                       reject(error);
-                    }
-                }
-            });
-        });
-    };
+  return async (
+    url: string,
+    params?: { [k: string]: any },
+    formatter?: Function
+  ): Promise<any> => {
+    const qs = queryString.stringify(params || {});
+    const res = await fetch(url + (qs ? `?${qs}` : ""), {
+      headers: {
+        Authorization: `Bearer ${spotifyApiClient._credentials.accessToken}`,
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      }
+    });
+
+    if (res.status === 200) {
+      const json = await res.json();
+      return !!formatter ? formatter(json) : json;
+    }
+
+    try {
+      const json = await res.json();
+      if (json.error) {
+        throw json.error;
+      }
+    } catch (e) {}
+
+    throw new Error("Unexpected error in apiRequest");
+  };
 }

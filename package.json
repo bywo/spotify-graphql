@@ -18,7 +18,6 @@
     "@types/lodash": "^4.14.57",
     "@types/nock": "^8.2.0",
     "@types/node": "~7.0.8",
-    "@types/request": "0.0.42",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",
     "gulp-copy": "^1.0.0",
@@ -33,7 +32,7 @@
     "standard-version": "^4.0.0",
     "tslint": "~3.15.1",
     "tslint-microsoft-contrib": "~2.0.13",
-    "typescript": "^2.2.1"
+    "typescript": "^3.5.3"
   },
   "scripts": {
     "test": "gulp test",
@@ -43,13 +42,12 @@
   "author": "Charly POLY <hello@charlypoly.com>",
   "license": "MIT",
   "dependencies": {
-    "graphql": "^0.9.1",
-    "graphql-tools": "0.10.1",
+    "graphql": "^14.4.2",
+    "graphql-tools": "^4.0.5",
     "isomorphic-unfetch": "^3.0.0",
     "lodash": "^4.17.4",
     "lru_map": "^0.3.3",
     "query-string": "^6.8.2",
-    "spotify-web-api-node": "^2.3.6",
-    "when": "^3.7.7"
+    "spotify-web-api-node": "^2.3.6"
   }
 }

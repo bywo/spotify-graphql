@@ -130,21 +130,21 @@ type Playlist {
 
 type AudioFeatures {
   id: String
-  acousticness: String
+  acousticness: Float
   analysis_url: String
-  danceability: String
-  duration_ms: String
-  energy: String
-  instrumentalness: String
-  key: String
-  liveness: String
-  loudness: String
-  mode: String
-  speechiness: String
-  tempo: String
-  time_signature: String
+  danceability: Float
+  duration_ms: Int
+  energy: Float
+  instrumentalness: Float
+  key: Int
+  liveness: Float
+  loudness: Float
+  mode: Int
+  speechiness: Float
+  tempo: Float
+  time_signature: Int
   track_href: String
-  valence: String
+  valence: Float
 }
 
 type Image {

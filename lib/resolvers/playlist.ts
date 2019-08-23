@@ -1,5 +1,4 @@
-import { safeApiCall, paginatorFromVariables, syncedPoll } from '../utils';
-const poll: (callback: Function, delay: number, predicate: Function) => any = require('when/poll');
+import { paginatorFromVariables, syncedPoll } from "../utils";
 
 export function playlistResolvers(spotifyApiClient) {
   return {
@@ -7,17 +6,21 @@ export function playlistResolvers(spotifyApiClient) {
     //   so we use `syncedPoll()` helper to avoid
     //   massive API calls at once
     tracks(playlist, variables) {
-      return syncedPoll('Playlist.tracks', () => {
-        return paginatorFromVariables('OffsetPaging', variables)(
-          spotifyApiClient,
-          'getPlaylistTracks',
-          response => response.body.items,
-          playlist.owner.id,
-          playlist.id
-        ).then( (tracks) => {
-          return tracks;
-        });
-      }, variables.throttle || 5);
+      return syncedPoll(
+        "Playlist.tracks",
+        () => {
+          return paginatorFromVariables("OffsetPaging", variables)(
+            spotifyApiClient,
+            "getPlaylistTracks",
+            response => response.body.items,
+            playlist.owner.id,
+            playlist.id
+          ).then(tracks => {
+            return tracks;
+          });
+        },
+        variables.throttle || 5
+      );
     }
   };
 }
